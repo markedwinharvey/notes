@@ -1,0 +1,142 @@
+<html ng-app='notes'>
+<head>
+	
+	<meta charset='utf-8'>		
+	<link rel='stylesheet' type='text/css' href='static/notes_css'></link>
+	<script type='text/javascript' src='static/load_jquery'></script>
+	
+	<script type='text/javascript' src='static/notes_js'></script>	
+	<script type='text/javascript' src='static/load_angular'></script>
+	
+	<script type='text/javascript' src='static/js_input'></script>
+	
+	
+	<!--
+	<script type='text/javascript' src='static/js_input.js'></script>
+	
+	<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js'></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-route.min.js"></script>
+	<script type='text/javascript' src='https://code.jquery.com/jquery-2.1.3.js'></script>
+	-->
+	<title>notes</title>
+	
+	<script>
+		function print(msg){$('#msgbox').append(msg);}	//print function
+		//-------
+		function send_ajax(params){
+			//print('yes');
+			$.ajax({
+				method:'post',
+				url:'/cgi-bin/notes.py',
+				data:{'package':JSON.stringify(params)},
+				success:function(result){
+					print(result);
+				}
+			});
+		}
+		//-------
+		$(document).on('click','#add_url',function(){
+			var url = $('#url').val();
+			var note = $('#note').val();
+			var folder = $('.folder').filter(function(){
+				return $(this).hasClass('folder_highlight');
+			}).html();
+			
+			if (note == ''){
+				var dict = {
+					input_msg	:'enter a note?',
+					el			:'',
+					callback	:send_ajax,				
+					params		:		
+						{
+							py_msg	:'add_url',
+							url		:url,
+							folder	:folder
+						}
+				}
+				js_input(dict);
+			}
+			else{
+				send_ajax({'py_msg':'add_url','url':url,'user_input':note,'folder':folder});
+			}			
+		});
+		//--------
+		var notes = angular.module('notes',[]);
+		notes.controller('main',['$scope',function($scope){
+			$scope.greeting ='yes';
+		}]);
+		//---------
+		$(document).on('click','.folder',function(){
+			$('.folder').removeClass('folder_highlight');
+			$(this).addClass('folder_highlight');
+		});
+	</script>
+</head>
+<body ng-controller='main'>
+	<div id='container'>
+		<h3>notes</h3>
+		<!--_____________left pane_________________-->
+		<div id='left_pane' class='panes border'>
+			url			<!--url-->
+				<br>
+			<textarea id='url'>http://imgur.com/random</textarea>
+				<br>
+			<button id='add_url'>add url</button>
+				<br>
+				<br>
+			note		<!--note-->
+				<br>
+			<textarea id='note'>asdf</textarea>
+				<br>
+		
+			folders		<!--folders-->
+			<div id='folder_list' class='border'>
+				<div class='folder folder_highlight'>all</div>
+				<div class='folder'>default</div>
+			</div>
+		</div>
+		
+		<!--_____________right pane_________________-->
+		<div id='right_pane' class='panes border'>
+			data
+				<br>
+			<div id='folder_data'></div>
+		</div>
+		
+	</div>
+	
+		
+	<div id='msgbox'></div>
+	
+	<style>
+		#container{
+		
+		}
+		.border{
+			border-style:solid;
+			border-color:black;
+			border-width:1px;
+		}
+		.panes{
+			display:inline-block;
+			vertical-align:top;
+		}
+		#folder_list{
+			text-align:center;
+		}
+		.folder{
+			font-size:14px;
+			
+		}
+		.folder:hover{
+			cursor:pointer;
+		}
+		.folder_highlight{
+			background-color:rgb(209,255,242);
+		}
+	</style>
+	
+	
+	
+</body>
+</html>

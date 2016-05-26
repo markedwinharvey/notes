@@ -1,0 +1,8 @@
+#!/usr/bin/env python
+def main():
+	with open('notes.html','r') as f:
+		notes = f.read()
+	print 'content-type:text/html\n'
+	print notes
+if __name__ == '__main__':
+	main()
