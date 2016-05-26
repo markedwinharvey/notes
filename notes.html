@@ -1,19 +1,15 @@
 <html ng-app='notes'>
 <head>
-	
 	<meta charset='utf-8'>		
-	<link rel='stylesheet' type='text/css' href='static/notes_css'></link>
-	<script type='text/javascript' src='static/load_jquery'></script>
 	
-	<script type='text/javascript' src='static/notes_js'></script>	
-	<script type='text/javascript' src='static/load_angular'></script>
+	<link rel='stylesheet' type='text/css' 	href='http://localhost:8000/static/notes.css'></link>
+	<script type='text/javascript' 			src='http://localhost:8000/static/notes.js'></script>	
+	<script type='text/javascript' 			src='http://localhost:8000/static/js_input.js'></script>
 	
-	<script type='text/javascript' src='static/js_input'></script>
-	
+	<script type='text/javascript' 			src='http://localhost:8000/static/jquery2.2.3.min.js'></script>
+	<script type='text/javascript' 			src='http://localhost:8000/static/angular1.4.5.min.js'></script>
 	
 	<!--
-	<script type='text/javascript' src='static/js_input.js'></script>
-	
 	<script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js'></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-route.min.js"></script>
 	<script type='text/javascript' src='https://code.jquery.com/jquery-2.1.3.js'></script>
@@ -21,16 +17,51 @@
 	<title>notes</title>
 	
 	<script>
-		function print(msg){$('#msgbox').append(msg);}	//print function
+		function print(msg){$('#msgbox').append(msg+'<br>');}	//print function
 		//-------
+		$(document).ready(function(){
+			send_ajax({'py_msg':'get_data'});
+		});
+		//-------
+		function append_db_data(data){
+			var entry_num=0;
+			for (i=0;i<data.length;i++){
+				var new_entry = "<div class='data_list_entry border'>"+
+									"<div class='notes data_column border entry"	+String(entry_num)+"'>"+data[i][1]+"</div>"+
+									"<div class='titles data_column border entry"	+String(entry_num)+"'>"+data[i][2]+"</div>"+
+									"<div class='urls data_column border entry"		+String(entry_num)+"'>"+data[i][3]+"</div>"+
+								"</div>";
+				entry_num++;
+				$('#data_list').append(new_entry);
+			}	
+		}
+			
+		//--------
+		$(document).on('click','.data_column',function(){
+			$('.data_column').css({'background-color':'white'});
+			var el = $(this).attr('class').split(' ');
+			for (i=0;i<el.length;i++){
+				if (el[i].substring(0,5) == 'entry'){
+					el = el[i];
+					break;
+				}
+			}
+			print(el);
+			$('.'+el).css({'background-color':'yellow'});
+		});
+		//--------
 		function send_ajax(params){
-			//print('yes');
 			$.ajax({
 				method:'post',
 				url:'/cgi-bin/notes.py',
 				data:{'package':JSON.stringify(params)},
 				success:function(result){
-					print(result);
+					if (params.py_msg == 'add_url'){		//result is confirmation message (string)
+						print(result);
+					}
+					else if (params.py_msg == 'get_data'){	//result is database json object
+						append_db_data(JSON.parse(result));
+					}
 				}
 			});
 		}
@@ -42,7 +73,7 @@
 				return $(this).hasClass('folder_highlight');
 			}).html();
 			
-			if (note == ''){
+			if (note == ''){	//if no note, prompt for note
 				var dict = {
 					input_msg	:'enter a note?',
 					el			:'',
@@ -100,43 +131,30 @@
 		<div id='right_pane' class='panes border'>
 			data
 				<br>
-			<div id='folder_data'></div>
+			<div id='data_list' class='border'>
+				<div id='data_list_header_cols' class='border'>
+				
+					<div class='data_list_header_col border'>note</div>
+					<div class='data_list_header_col border'>title</div>
+					<div class='data_list_header_col border'>url</div>
+				</div>	
+				<!--
+				<div class='data_list_entry border'>
+					<div class='notes data_column border'>this is a note</div>
+					<div class='titles data_column border'>this is a title</div>
+					<div class='urls data_column border'>this is a url</div>
+				</div>
+				-->
+				
+			</div>
 		</div>
 		
 	</div>
-	
 		
 	<div id='msgbox'></div>
 	
 	<style>
-		#container{
-		
-		}
-		.border{
-			border-style:solid;
-			border-color:black;
-			border-width:1px;
-		}
-		.panes{
-			display:inline-block;
-			vertical-align:top;
-		}
-		#folder_list{
-			text-align:center;
-		}
-		.folder{
-			font-size:14px;
-			
-		}
-		.folder:hover{
-			cursor:pointer;
-		}
-		.folder_highlight{
-			background-color:rgb(209,255,242);
-		}
+	
 	</style>
-	
-	
-	
 </body>
 </html>
