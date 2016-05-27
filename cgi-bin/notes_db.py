@@ -47,9 +47,10 @@ def main(action, data):
 		command += '\''+row_count+'\',\''+data.note+'\',\''+data.title+'\',\''+data.url+'\',\''+data.folder+'\',\''+data.time+'\',\''+data.epoch+'\')'
 		try:
 			cur.execute(command)
-			return 'New data added!'
+			cur.execute('SELECT * FROM notes WHERE id = '+row_count)
+			return {'msg':'New data added!','data': cur.fetchall()}
 		except:
-			return 'Error recording data!'
+			return {'msg':'Error recording data!'}
 	elif action == 'get_data':
 		cur.execute('SELECT * FROM notes')
 		return cur.fetchall()

@@ -1,0 +1,79 @@
+/*-----------right pane-------------*/
+#data_list{
+	padding-left:1px;
+	padding-right:1px;
+
+}
+#data_list_header_cols{
+	
+	
+}
+.data_list_header_col{
+	display:inline-block;
+	font-size:12px;
+	font-weight:bold;
+	height:13px;
+	text-align:center;
+	width:296px;	
+}
+.data_list_entry:hover{
+	cursor:pointer;
+}
+.data_column{
+	display:inline-block;
+	font-size:10px;
+	height:12px;
+	padding:0px;
+	margin:0px;
+	padding-left:1px;
+	padding-right:1px;
+	width:300px;	
+	overflow:hidden;
+	vertical-align:top;
+}
+.open_link{
+	height:12px;
+	font-size:10px;
+	background-color:rgb(255,215,144);
+	border-radius:5px;
+	display:inline-block;
+	padding-top:0px;
+	padding-left:2px;
+	padding-right:2px;
+	padding-bottom:1px;
+}
+/*-----------end right pane-------------*/
+
+
+.border{
+	border-style:solid;
+	border-color:black;
+	border-width:1px;
+}
+.panes{
+	display:inline-block;
+	vertical-align:top;
+	padding:1px;
+}
+#folder_list{
+	text-align:center;
+}
+.folder{
+	font-size:14px;
+	
+}
+.folder:hover{
+	cursor:pointer;
+}
+.folder_highlight{
+	background-color:rgb(209,255,242);
+}
+#msgbox{
+	display:inline-block;
+	font-size:13px;
+	width:200px;
+}
+#msgbox_messages{
+	font-size:11px;
+	overflow:hidden;
+}
